@@ -35,8 +35,8 @@ define('DB_PATH', db_get_sqlite_path());
 
 // 管理员配置
 define('ADMIN_USERNAME', 'admin');
-// 使用更安全的password_hash，默认密码：admin
-define('ADMIN_PASSWORD', '$2y$12$0xUYNpCI8cFrz05zJQzYte4kxJUzQ2.EvY4Vsmfby/3dfjpi5RofG'); // admin
+// 使用更安全的password_hash，默认密码：admin888
+define('ADMIN_PASSWORD', '$2y$12$1OOZUqzYbO4XRjf9XKx0luP5MMHS8d0Cpl8pIZ9YzhBCOEnsFbgrm'); // admin888
 
 // 分页配置
 define('ITEMS_PER_PAGE', 12);

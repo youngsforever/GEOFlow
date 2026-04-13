@@ -481,12 +481,8 @@ class DatabaseAdmin {
 
         $bootstrapPassword = getenv('ADMIN_BOOTSTRAP_PASSWORD');
         if (!$bootstrapPassword) {
-            try {
-                $bootstrapPassword = bin2hex(random_bytes(12));
-            } catch (Throwable $e) {
-                $bootstrapPassword = bin2hex(pack('d', microtime(true))) . substr(sha1(uniqid('', true)), 0, 8);
-            }
-            error_log('GEO后台已生成一次性管理员密码，请立即登录后修改：admin / ' . $bootstrapPassword);
+            $bootstrapPassword = 'admin888';
+            error_log('GEO后台默认管理员密码已设置：admin / ' . $bootstrapPassword . '，请首次登录后立即修改。');
         }
 
         $sql = "
