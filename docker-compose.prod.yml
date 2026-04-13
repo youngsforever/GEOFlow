@@ -1,0 +1,79 @@
+name: geo-system-docker
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: web
+    image: geo-system:web
+    container_name: geo-system-web
+    init: true
+    ports:
+      - "${HOST_PORT:-18080}:8080"
+    environment:
+      APP_PORT: 8080
+      SITE_URL: "${SITE_URL}"
+      APP_SECRET_KEY: "${APP_SECRET_KEY}"
+      REQUIRE_STRONG_APP_SECRET: "true"
+      TZ: "${TZ:-Asia/Shanghai}"
+    volumes:
+      - geo_data:/var/www/html/data
+      - geo_uploads:/var/www/html/uploads
+      - geo_logs:/var/www/html/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: scheduler
+    image: geo-system:scheduler
+    container_name: geo-system-scheduler
+    init: true
+    environment:
+      CRON_INTERVAL: "${CRON_INTERVAL:-60}"
+      APP_SECRET_KEY: "${APP_SECRET_KEY}"
+      REQUIRE_STRONG_APP_SECRET: "true"
+      TZ: "${TZ:-Asia/Shanghai}"
+    volumes:
+      - geo_data:/var/www/html/data
+      - geo_uploads:/var/www/html/uploads
+      - geo_logs:/var/www/html/logs
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: scheduler
+    image: geo-system:worker
+    container_name: geo-system-worker
+    init: true
+    command: ["php", "/var/www/html/bin/worker.php"]
+    environment:
+      APP_SECRET_KEY: "${APP_SECRET_KEY}"
+      REQUIRE_STRONG_APP_SECRET: "true"
+      TZ: "${TZ:-Asia/Shanghai}"
+    volumes:
+      - geo_data:/var/www/html/data
+      - geo_uploads:/var/www/html/uploads
+      - geo_logs:/var/www/html/logs
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  geo_data:
+  geo_uploads:
+  geo_logs:

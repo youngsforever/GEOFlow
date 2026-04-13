@@ -1,0 +1,27 @@
+# 禁止访问数据目录
+Order Deny,Allow
+Deny from all
+
+# 禁止执行PHP文件
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# 禁止访问数据库文件
+<Files "*.db">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# 禁止访问备份文件
+<Files "*.sql">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# 禁止访问日志文件
+<Files "*.log">
+    Order Deny,Allow
+    Deny from all
+</Files>
